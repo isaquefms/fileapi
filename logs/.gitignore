@@ -1,0 +1,4 @@
+# Apenas para enviar a pasta para o github
+# Logo, vamos ignorar tudo menos o gitignore
+*
+!.gitignore
