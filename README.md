@@ -19,3 +19,6 @@ O objetivo foi criar uma `api` para processamento de arquivos CSVs de cobranças
 5. Utilize o arquivo `client.py` para fazer uma requisição para a api. O comando retorna o tempo da requisição.
 Lembre-se que para executar o comando é necessário criar uma virtualenv e instalar as dependências do arquivo `requirements.txt`. `python -m venv venv`, ative a venv com `source venv/bin/activate` e `pip install -r requirements.txt`.
 6. Para rodar os testes execute o comando `docker-compose exec web python manage.py test`
+
+## Endpoints
+- A interface do Django Rest Framework está disponível em `http://127.0.0.1:8000/api/files/`
