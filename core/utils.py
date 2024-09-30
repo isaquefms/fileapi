@@ -1,5 +1,6 @@
 import os
 import csv
+from typing import Generator
 import uuid
 import logging
 
@@ -85,14 +86,14 @@ def log_info(message: str):
     logger.info(message)
 
 
-def read_csv_file(file):
+def read_csv_file(file) -> Generator:
     """Função para ler um arquivo csv e retornar uma lista de dicionários.
     
     Args:
         file (File): Arquivo csv a ser lido.
     
     Returns:
-        list: Lista de dicionários com os dados do arquivo.
+        list: generator de dicionários com os dados do arquivo.
     """
     with open(file, 'r') as f:
         data = csv.DictReader(f)
@@ -100,17 +101,16 @@ def read_csv_file(file):
             yield row
             
             
-def random_processing() -> bool:
-    """Função para simular um processamento aleatório com 90% de taxa de sucesso.
+def default_processing() -> bool:
+    """Função para simular um processamento.
     
     Returns:
         bool: Resultado do processamento.
     """
-    import random
-    return random.random() <= 0.9
+    return True
 
 
-class RandomProcessing():
+class DefaultProcessing():
     """Classe para simular um processamento aleatório com 90% de taxa de sucesso.
     """
     
@@ -119,10 +119,10 @@ class RandomProcessing():
         return True
     
     def process(self) -> bool:
-        return random_processing()
+        return default_processing()
 
 
-class CreatePDFBillingClient(RandomProcessing):
+class CreatePDFBillingClient(DefaultProcessing):
     """Classe para criar um arquivo pdf com os dados da cobrança.
     """
     
@@ -142,7 +142,7 @@ class CreatePDFBillingClient(RandomProcessing):
         return False
     
     
-class SendNotificationBillingClient(RandomProcessing):
+class SendNotificationBillingClient(DefaultProcessing):
     """Classe para enviar uma notificação para o usuário.
     """
     

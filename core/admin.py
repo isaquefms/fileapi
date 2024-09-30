@@ -1,3 +1,3 @@
 from django.contrib import admin
 
-# Register your models here.
+# Poderíamos ver os dados do banco de dados diretamente por essa interface.

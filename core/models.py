@@ -27,9 +27,9 @@ class Billing(BaseModel):
     
     # Pretendemos usar os status para controlar a cobrança dentro do sistema.
     class Status(models.TextChoices):
-        PENDING = 'PENDING', 'PE'
-        INVOICE_CREATED = 'INVOICE CREATED', 'IC'
-        NOTIFICATION_SENT = 'NOTIFICATION SENT', 'NS'
+        PENDING = 'PE', 'PENDING' 
+        INVOICE_CREATED =  'IC', 'INVOICE CREATED'
+        NOTIFICATION_SENT =  'NS', 'NOTIFICATION SENT'
     
     file = models.ForeignKey(File, on_delete=models.DO_NOTHING)
     name = models.CharField(max_length=255)
@@ -38,9 +38,10 @@ class Billing(BaseModel):
     debt_amount = models.DecimalField(max_digits=10, decimal_places=2)
     debt_due_date = models.DateField()
     # O campo debt_id é um campo único, ou seja, não pode haver dois registros com o mesmo valor.
-    #   Isso é importante para garantir que não haja duplicidade de registros de cobrança.
+    #   Isso é importante para garantir que não haja duplicidade de registros de cobrança mesmo que haja linhas
+    #   repetidas ou se um arquivo for processado pela metade.
     debt_id = models.UUIDField(unique=True)
-    status = models.CharField(max_length=50, choices=Status.choices, default=Status.PENDING)
+    status = models.CharField(max_length=2, choices=Status.choices, default=Status.PENDING)
 
     class Meta:
         verbose_name = 'Billing'
