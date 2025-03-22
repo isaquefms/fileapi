@@ -1,11 +1,7 @@
-from rest_framework import routers
-from django.urls import path, include
-from .views import FileViewSet
+from django.urls import path
 
-
-router = routers.DefaultRouter()
-router.register(r'files', FileViewSet, basename='files')
+from core.views import process_file
 
 urlpatterns = [
-    path('', include(router.urls)),
+    path('files/', process_file, name='process_file'),
 ]

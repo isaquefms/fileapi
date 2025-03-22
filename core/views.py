@@ -1,11 +1,9 @@
 import time
-
-from rest_framework.viewsets import ViewSet
-from rest_framework.response import Response
+from django.http import HttpResponse, JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 
 from .models import File, Billing
-from core.utils import CreatePDFBillingClient, SendNotificationBillingClient, create_default_api_response, log_debug, log_error, log_info, read_csv_file
-from .serializers import FileSerializer, BillingSerializer
+from core.utils import CreatePDFBillingClient, SendNotificationBillingClient, create_default_api_response, log_info, read_csv_file
             
 
 def process_csv_content(file, file_id: int) -> list:
@@ -63,23 +61,20 @@ def send_notification_and_create_pdf(file_id: int):
         create_pdf_file(billing)
         send_notification(billing)
     objs.update(status=Billing.Status.NOTIFICATION_SENT)
+    
 
-
-# As views poderiam ser feitas via method_based porém achei melhor usar o Rest Framework para facilitar a implementação.
-class FileViewSet(ViewSet):
-    """Definição da viewset para o modelo File.
-    """
+async def process_file(request):
+    if request.method != 'POST':
+        return JsonResponse(create_default_api_response(405, 'method not allowed', 'method not allowed'), status=405)
     
-    serializer_class = FileSerializer
+    uploaded_file = request.FILES['file']
+    filename = uploaded_file.name
     
-    def list(self, request):
-        return Response({'detail': 'Method not allowed'}, status=405)
+    # validando se o arquivo é um csv
+    if not filename.endswith('.csv'):
+        return HttpResponse(create_default_api_response(400, 'file received with error', 'file must be a csv'), status=400)
     
-    def create(self, request):
-        serializer = FileSerializer(data=request.data)
-        if serializer.is_valid():
-            file = serializer.save()
-            process_csv_content(file.file.path, file.id)
-            send_notification_and_create_pdf(file.id)
-            return Response(create_default_api_response(201, 'file received', serializer.data), status=201)
-        return Response(create_default_api_response(400, 'file received with error', serializer.errors), status=400)
+    file = File.objects.create(file=uploaded_file)
+    process_csv_content(file.file.path, file.id)
+    send_notification_and_create_pdf(file.id)
+    return HttpResponse(create_default_api_response(201, 'file received', 'created'), status=201)

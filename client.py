@@ -12,7 +12,7 @@ def post_fake_data():
 
 def post_data():
     # servidor local
-    url = 'http://localhost:8000/api/files/'
+    url = 'http://127.0.0.1:8000/api/files/'
     
     # enviando o arquivo csv para a api
     response = requests.post(url, files={'file': open('testfiles/input.csv', 'rb')})
